@@ -1,45 +1,57 @@
 // router using express package
 const router = require('express').Router()
 
-// require notes from database folder
+// require notes (array) from database folder
 let { notes } = require('../db')
 
-// get route to return notes data
+// get route to return notes array data
 router.get('/notes', (req, res) => {
  res.json(notes)
 })
 
-// post route to place notes data into array
+// post route to push new notes data into notes array in database
 router.post('/notes', (req, res) => {
- // push the request body to notes and send status for success (ok)
- notes.push(req.body)
- res.sendStatus(200)
-})
+ // newNote will be set to the request body
+ let newNote = req.body
 
-// put route to update the notes (to update a certain note)
-router.put('/notes/:noteTitle', (req, res) => {
- // set noteTitle to the request parameters noteTitle
- const noteTitle = req.params.noteTitle
- // check to determine if note text matches what was provided to grab specific note
- notes.forEach(note => {
-  if (note.noteTitle === noteTitle) {
-   note.isMarked = !note.isMarked
+ // set highest id to 0 so a unique id can be added to note during below
+ let highestId = 0
+
+ // for loop to loop through the notes array
+ for (let i = 0; i < notes.length; i ++) {
+  let singleNote = notes[i]
+
+  // if the singleNote id is greater than the highest id
+  if (parseInt(singleNote.noteId) > highestId) {
+   // highestId will be the highest numbered id in notes array
+   highestId = parseInt(singleNote.noteId)
   }
- })
- // send status for success (ok)
+ }
+
+ // adjusted ID will be highestId + 1 to make the ID unique
+ adjId = highestId + 1
+
+ // newNoteId set to the adjId (string)
+ newNoteId = JSON.stringify(adjId)
+
+ // assign newNote.id to newNoteId
+ newNote.noteId = newNoteId
+
+ // push the newNote to notes array in database and send status for success (ok)
+ notes.push(newNote)
  res.sendStatus(200)
 })
 
-
-// delete route to delete item that was removed from front end
-router.delete('/notes/:noteTitle', (req, res) => {
- // set noteTitle to the request parameters noteTitle
- const noteTitle = req.params.noteTitle
- // filter notes for all that does not equal the noteTitle that is deleted
- notes = notes.filter(note => note.noteTitle !== noteTitle)
+// delete route to delete item based on noteId
+router.delete('/notes/:noteId', (req, res) => {
+ // set noteId to the request parameters noteId provided
+ const noteId = req.params.noteId
+ // filter notes array to include everything but the object with a matching noteDd
+ notes = notes.filter(note => note.noteId !== noteId)
  // response send status for success (ok)
  res.sendStatus(200)
 })
 
+// export router
 module.exports = router
 
