@@ -11,7 +11,7 @@ Note taker app using Express.js
 </p>
 
 
-### Deployed Heroku App: 
+### Deployed Heroku App: https://note-taker-65956.herokuapp.com/
 
 ### Github: https://github.com/ssharp0/note-taker 
 
